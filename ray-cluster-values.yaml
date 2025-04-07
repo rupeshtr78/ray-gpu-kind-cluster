@@ -1,0 +1,17 @@
+image:
+  repository: qwen2-serve-ray
+  tag: 1.0
+  pullPolicy: IfNotPresent
+
+head:
+  rayStartParams:
+    num-gpus: "1"
+  resources:
+    limits:
+      nvidia.com/gpu: 1
+worker:
+  rayStartParams:
+    num-gpus: "1"
+  resources:
+    limits:
+      nvidia.com/gpu: 1

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-registry-test
+spec:
+  containers:
+  - name: nginx
+    image: 10.0.0.213:5050/nginx:alpine
+    imagePullPolicy: IfNotPresent  # Skip pulling if local copy exists

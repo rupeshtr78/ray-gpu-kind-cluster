@@ -1,0 +1,140 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: ClusterConfiguration
+        scheduler:
+          extraArgs:
+            v: "1"
+        controllerManager:
+          extraArgs:
+            v: "1"
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            v: "1"
+
+  - role: worker
+    kubeadmConfigPatches:
+      - |
+        kind: JoinConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            v: "1"
+    extraMounts:
+      - hostPath: /dev/nvidiactl
+        containerPath: /dev/nvidiactl
+      - hostPath: /dev/nvidia-uvm
+        containerPath: /dev/nvidia-uvm
+      - hostPath: /dev/nvidia-uvm-tools
+        containerPath: /dev/nvidia-uvm-tools
+      - hostPath: /dev/nvidia-modeset
+        containerPath: /dev/nvidia-modeset
+      - hostPath: /dev/nvidia0
+        containerPath: /dev/nvidia0
+      - hostPath: /dev/nvidia1
+        containerPath: /dev/nvidia1
+      - hostPath: /usr/local/cuda-12.4
+        containerPath: /usr/local/cuda-12.4
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvoptix.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvoptix.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-tls.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-tls.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-rtcore.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-rtcore.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-ptxjitcompiler.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-ptxjitcompiler.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-opticalflow.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-opticalflow.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-opencl.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-opencl.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-nscq.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-nscq.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-ngx.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-ngx.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-ifr.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-ifr.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-glvkspirv.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-glvkspirv.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-glsi.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-glsi.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-fbc.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-fbc.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-encode.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-encode.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-eglcore.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-eglcore.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-compiler.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-compiler.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-cfg.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-cfg.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-cbl.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-cbl.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-allocator.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-allocator.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libnvcuvid.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libnvcuvid.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libcuda.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libcuda.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libGLESv2_nvidia.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libGLESv2_nvidia.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libGLESv1_CM_nvidia.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libGLESv1_CM_nvidia.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so.550.54.15
+        hostPath: /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so.550.54.15
+        readOnly: true
+      - containerPath: /usr/bin/nvidia-smi
+        hostPath: /usr/bin/nvidia-smi
+        readOnly: true
+      - containerPath: /usr/bin/nvidia-debugdump
+        hostPath: /usr/bin/nvidia-debugdump
+        readOnly: true
+      - containerPath: /usr/bin/nvidia-persistenced
+        hostPath: /usr/bin/nvidia-persistenced
+        readOnly: true
+      - containerPath: /usr/bin/nvidia-cuda-mps-control
+        hostPath: /usr/bin/nvidia-cuda-mps-control
+        readOnly: true
+      - containerPath: /usr/bin/nvidia-cuda-mps-server
+        hostPath: /usr/bin/nvidia-cuda-mps-server
+        readOnly: true
+      - containerPath: /var/run/nvidia-persistenced/socket
+        hostPath: /var/run/nvidia-persistenced/socket
+        readOnly: true
+

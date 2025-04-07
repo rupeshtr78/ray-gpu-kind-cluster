@@ -1,0 +1,9 @@
+version: v1
+flags:
+  migStrategy: "mixed" # Only change from config0.yaml
+  failOnInitError: true
+  nvidiaDriverRoot: "/"
+  plugin:
+    passDeviceSpecs: false
+    deviceListStrategy: envvar
+    deviceIDStrategy: uuid

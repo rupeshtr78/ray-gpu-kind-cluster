@@ -1,0 +1,8 @@
+# values.yaml
+securityContext:
+  allowPrivilegeEscalation: true
+  capabilities:
+    add:
+    - SYS_PTRACE
+  seccompProfile:
+    type: Unconfined
