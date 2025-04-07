@@ -17,6 +17,24 @@ nodes:
         nodeRegistration:
           kubeletExtraArgs:
             v: "1"
+    extraMounts:
+      - hostPath: /data/hf-cache
+        containerPath: /data/hf-cache         
+      - hostPath: /dev/nvidiactl
+        containerPath: /dev/nvidiactl
+      - hostPath: /dev/nvidia-uvm
+        containerPath: /dev/nvidia-uvm
+      - hostPath: /dev/nvidia-uvm-tools
+        containerPath: /dev/nvidia-uvm-tools
+      - hostPath: /dev/nvidia-modeset
+        containerPath: /dev/nvidia-modeset
+      - hostPath: /dev/nvidia0
+        containerPath: /dev/nvidia0
+      - hostPath: /dev/nvidia1
+        containerPath: /dev/nvidia1
+      - hostPath: /usr/local/cuda-12.4
+        containerPath: /usr/local/cuda-12.4
+        readOnly: true
 
   - role: worker
     kubeadmConfigPatches:
@@ -137,4 +155,12 @@ nodes:
       - containerPath: /var/run/nvidia-persistenced/socket
         hostPath: /var/run/nvidia-persistenced/socket
         readOnly: true
+      - hostPath: /data/hf-cache
+        containerPath: /data/hf-cache     
 
+containerdConfigPatches:
+- |-
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."10.0.0.213:5050"]
+    endpoint = ["http://10.0.0.213:5050"]
+  [plugins."io.containerd.grpc.v1.cri".registry.configs."10.0.0.213:5050".tls]
+    insecure_skip_verify = true  # Only needed for self-signed HTTPS (optional)

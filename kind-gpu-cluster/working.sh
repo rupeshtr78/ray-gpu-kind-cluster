@@ -4,6 +4,15 @@ helm install gpu-operator \
      -n gpu-operator --create-namespace \
      nvidia/gpu-operator --set driver.enabled=false
 
+helm install kuberay-operator kuberay/kuberay-operator --version 1.3.0 \                              <aws:minio>
+     -n kuberay-operator --create-namespace \
+     --values ray-operator-values.yaml
+     
+
+helm install raycluster-qwen kuberay/ray-cluster --version 1.3.0 \                                                          <aws:minio>
+     -n ray-cluster --create-namespace \
+     --values ray-cluster-values.yaml
+
 
 # kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.17.1/deployments/static/nvidia-device-plugin.yml
 

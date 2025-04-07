@@ -23,6 +23,9 @@ set -o pipefail
 
 source "${CURRENT_DIR}/scripts/common.sh"
 
+# The path to the scripts directory
+chmod +x "${CURRENT_DIR}"/scripts/*.sh
+
 # Build the kind image and create a test cluster
 ${SCRIPTS_DIR}/build-kind-image.sh
 ${SCRIPTS_DIR}/create-kind-cluster.sh
@@ -33,7 +36,16 @@ if [ "${EXISTING_IMAGE_ID}" != "" ]; then
 	${SCRIPTS_DIR}/load-plugin-image-into-kind.sh
 fi
 
+# Install the NVIDIA GPU Operator
+${SCRIPTS_DIR}/nvidia-operator.sh
+# Install the KubeRay Operator
+${SCRIPTS_DIR}/ray-operator.sh
+
+# apply hf-cache-pv manifests
+kubectl apply -f "${CURRENT_DIR}/scripts/hf-cache-pv/"
+echo "✅ hf-cache-pv manifests applied successfully."
+
 set +x
 printf '\033[0;32m'
-echo "Cluster creation complete: ${KIND_CLUSTER_NAME}"
+echo "✅ Cluster creation complete: ${KIND_CLUSTER_NAME}"
 printf '\033[0m'
