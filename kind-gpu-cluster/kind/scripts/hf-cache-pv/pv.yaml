@@ -1,0 +1,24 @@
+# 1. PersistentVolume definition:
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hf-cache-pv
+spec:
+  storageClassName: "standard"
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/hf-cache
+    type: Directory
+  # nodeAffinity:
+  #   required:
+  #     nodeSelectorTerms:
+  #     - matchExpressions:
+  #       - key: kubernetes.io/hostname
+  #         operator: In
+  #         values:
+  #         - k8s-device-plugin-cluster-worker
+  #         - k8s-device-plugin-cluster-control-plane
+# Your Kind node name

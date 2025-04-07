@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: hf-pod
+  name: pv-test-pod
 spec:
   containers:
   - name: hf-container
