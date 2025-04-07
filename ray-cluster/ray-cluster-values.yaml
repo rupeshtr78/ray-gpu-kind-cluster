@@ -1,6 +1,6 @@
 image:
-  repository: qwen2-serve-ray
-  tag: 1.0
+  repository: "10.0.0.213:5050/qwen2-serve-ray"
+  tag: "1.0.1"
   pullPolicy: IfNotPresent
 
 head:
@@ -9,9 +9,53 @@ head:
   resources:
     limits:
       nvidia.com/gpu: 1
+  containerEnv:
+    - name: HUGGINGFACE_HUB_CACHE
+      value: /data/hf-cache/huggingface/hub
+    - name: HUGGING_FACE_HUB_TOKEN
+      value: /data/hf-cache/huggingface/token
+    - name: CUDA_HOME
+      value: "/usr/local/cuda-12.4"
+    - name: PYTHONPATH
+      value: "$PYTHONPATH:/home/ray"
+  volumeMounts:
+    - name: hf-cache
+      mountPath: /data/hf-cache
+    - name: cuda
+      mountPath: /usr/local/cuda-12.4
+      readOnly: true
+  volumes:
+    - name: hf-cache
+      persistentVolumeClaim:
+        claimName: hf-cache-pvc
+    - name: cuda
+      hostPath:
+        path: /usr/local/cuda-12.4
 worker:
   rayStartParams:
     num-gpus: "1"
   resources:
     limits:
       nvidia.com/gpu: 1
+  containerEnv:
+    - name: HUGGINGFACE_HUB_CACHE
+      value: /data/hf-cache/huggingface/hub
+    - name: HUGGING_FACE_HUB_TOKEN
+      value: /data/hf-cache/huggingface/token
+    - name: CUDA_HOME
+      value: "/usr/local/cuda-12.4"
+    - name: PYTHONPATH
+      value: "$PYTHONPATH:/home/ray"
+  volumeMounts:
+    - name: hf-cache
+      mountPath: /data/hf-cache
+    - name: cuda
+      mountPath: /usr/local/cuda-12.4
+      readOnly: true
+  volumes:
+    - name: hf-cache
+      persistentVolumeClaim:
+        claimName: hf-cache-pvc
+    - name: cuda
+      hostPath:
+        path: /usr/local/cuda-12.4

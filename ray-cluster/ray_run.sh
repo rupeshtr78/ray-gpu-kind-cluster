@@ -28,3 +28,20 @@ kind load docker-image my-ray-image:v1 --name k8s-device-plugin-cluster
 
 kubectl get nodes -o wide
 docker exec -it kind-control-plane crictl images | grep my-ray-image
+
+
+
+ray job submit --address http://localhost:8265 -- python /home/ray/app/check-resources.py 
+
+helm uninstall raycluster -n ray-cluster
+
+# worked
+serve run --address http://localhost:8265 --working-dir /home/ray/app qwen2-serve:qwen_server
+
+curl -X POST http://127.0.0.1:9023/ \                                                                                             <aws:minio>
+     -H "Content-Type: application/json" \
+     -d '{"prompt": "Explain the concept of Apache ray", "max_new_tokens": 100}'
+
+
+
+serve run --address http://localhost:8265 app.qwen2_serve:qwen_server

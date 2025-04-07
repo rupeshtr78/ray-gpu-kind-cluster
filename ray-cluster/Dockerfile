@@ -52,11 +52,12 @@ WORKDIR /home/ray/app
 
 
 # Copy script
-COPY --chown=ray:users qwen2-serve.py /home/ray/app/qwen2-serve.py
+COPY --chown=ray:users ray-jobs/ /home/ray/app/
 
 # Ray Serve endpoint port
 EXPOSE 9023
 
 
+
 # Entry point to launch Ray Serve deployment
-CMD ["python", "qwen2-serve.py"]
+# CMD ["python", "qwen2-serve.py"]
