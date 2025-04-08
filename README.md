@@ -120,6 +120,12 @@ curl -X POST http://127.0.0.1:9023/
 
 ---
 
+## Documentation & Resources
+
+- [Ray Documentation](https://docs.ray.io)
+- [KubeRay Operator](https://github.com/ray-project/kuberay)
+- [Kind Kubernetes](https://kind.sigs.k8s.io)
+
 ## Contributions and Issues
 
 Contributions, suggestions, and bug reports are always welcome! Feel free to open a pull request or submit an issue if you encounter any problems.
