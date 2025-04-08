@@ -95,19 +95,18 @@ extraMounts:
   # ...  NVIDIA libraries .....
 ```
 
-This complete set of shared libraries helps GPU features, CUDA support.
+This libraries helps GPU features, CUDA support.
 
 #### GPU Driver Version
 
-**match your mounted libraries with the host NVIDIA driver version** .I am running ubuntu 22.04 with driver version `550.54.15`. PU libraries and binaries must exactly match the host driver's installed version for compatibility and not hit runtime issues.
+**match your mounted libraries with the host NVIDIA driver version** .I am running ubuntu 22.04 with driver version `550.54.15`. libraries and binaries must exactly match the host driver's installed version for compatibility and not hit runtime issues.
 
 check that your host driver version matches exactly with the version number in the YAML:
 
 ## Start Deployment
 
-### 1. Set Up a GPU-Enabled KIND Cluster Deploy Nvidia device plugin , gpu operator & Ray Operators
+#### 1. Set Up a GPU-Enabled KIND Cluster Deploy Nvidia device plugin , gpu operator & Ray Operators
 
-Deploy a local Kubernetes cluster including NVIDIA GPU support:
 This script deploys Kind Kubernetes cluster, configures the required host volume mounts including NVIDIA libraries and GPU device paths, creates Persistent Volumes (PV) and Persistent Volume Claims (PVC), and installs both the NVIDIA GPU Operator and KubeRay Operator
 
 ```bash
@@ -121,7 +120,7 @@ kubectl apply -f gpu-test.yaml
 
 ```
 
-### 2. Docker image Build for Ray Cluster
+#### 3. Docker image Build for Ray Cluster
 
 ```bash
 cd ray-cluster
@@ -130,24 +129,24 @@ docker build -t 10.0.0.213:5050/qwen2-serve-ray:1.0.4 .
 docker push 10.0.0.213:5050/qwen2-serve-ray:1.0.4
 ```
 
-### 2. Deploy your Ray cluster:
+#### 4. Deploy your Ray cluster:
 
 ```bash
  ray-cluster/ray-cluster.sh
 ```
 
-### Port Forward
+#### 5. Port Forward
 
 Port forward ports 8265 and 8000
 
-#### Deploy Ray jobs
+#### 5. Deploy Ray jobs
 
 ```bash
 # logs will show the Ray cluster's total resource capacity, including GPUs.
 ray job submit --address http://localhost:8265 -- python -c "import pprint; import ray; ray.init(); pprint.pprint(ray.cluster_resources(), sort_dicts=True)"
 ```
 
-#### Ray Serve (example Qwen2 inference):
+#### 7. Ray Serve (example Qwen2 inference):
 
 ```bash
 
