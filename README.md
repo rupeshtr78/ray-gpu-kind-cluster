@@ -38,11 +38,77 @@ Before you start, ensure you have:
 
 ---
 
-## Quick Start
+#### Mounting Hugging Face Cache from Host in Kubernetes Cluster
+
+Mount Hugging Face cache directory from the host into your Ray cluster pods using PersistentVolume and PersistentVolumeClaim. This allows to reuse downloaded Hugging Face models, datasets, and other artifacts across pod restarts and deployments.
+
+#### PersistentVolume Setup
+
+The PersistentVolume is defined in [`kind-gpu-cluster/kind/scripts/hf-cache-pv/pv.yaml`](kind-gpu-cluster/kind/scripts/hf-cache-pv/pv.yaml), and it specifies a host directory to store Hugging Face cache:
+
+```yaml
+hostPath:
+  path: /data/hf-cache
+  type: Directory
+```
+
+This creates a PersistentVolume named `hf-cache-pv` associated with the host's `/data/hf-cache` directory. Adjust the `path` as needed based on the storage location on your Kubernetes host node.
+
+#### Usage in Ray Helm Values
+
+The Ray cluster Helm configuration (found in [`ray-cluster/ray-cluster-values.yaml`](ray-cluster/ray-cluster-values.yaml)) leverages the Hugging Face cache PV by referencing a PersistentVolumeClaim named `hf-cache-pvc`. Both the head node and worker nodes mount this volume:
+
+```yaml
+volumes:
+  - name: hf-cache
+    persistentVolumeClaim:
+      claimName: hf-cache-pvc
+
+volumeMounts:
+  - name: hf-cache
+    mountPath: /data/hf-cache
+```
+
+Furthermore, an environment variable `HUGGINGFACE_HUB_CACHE` explicitly points the Hugging Face library to use this mounted cache location directly:
+
+```yaml
+containerEnv:
+  - name: HUGGINGFACE_HUB_CACHE
+    value: /data/hf-cache/huggingface/hub
+```
+
+H
+
+#### Mounting NVIDIA Drivers and Libraries into Kind Nodes
+
+To enable GPU acceleration (including CUDA) inside a Kubernetes (`kind`) cluster, mount driver libraries and binaries from your host into the cluster nodes directly. The provided configuration file [`kind-gpu-cluster/kind/scripts/kind-cluster-config.yaml`](kind-gpu-cluster/kind/scripts/kind-cluster-config.yaml) ( Tried other options the /usr/lib/ is too big so had to choose specific files)
+
+#### NVIDIA Libraries Mounting
+
+Worker node definition (`role: worker`), NVIDIA driver-related libraries from `/usr/lib/x86_64-linux-gnu/` are explicitly mounted into containers to support GPU support:
+
+```yaml
+extraMounts:
+  - containerPath: /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.550.54.15
+    hostPath: /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.550.54.15
+    readOnly: true
+  # ...  NVIDIA libraries .....
+```
+
+This complete set of shared libraries helps GPU features, CUDA support.
+
+#### GPU Driver Version
+
+**match your mounted libraries with the host NVIDIA driver version** .I am running ubuntu 22.04 with driver version `550.54.15`. PU libraries and binaries must exactly match the host driver's installed version for compatibility and not hit runtime issues.
+
+check that your host driver version matches exactly with the version number in the YAML:
+
+## Start Deployment
 
 ### 1. Set Up a GPU-Enabled KIND Cluster Deploy Nvidia device plugin , gpu operator & Ray Operators
 
 Deploy a local Kubernetes cluster including NVIDIA GPU support:
+This script deploys Kind Kubernetes cluster, configures the required host volume mounts including NVIDIA libraries and GPU device paths, creates Persistent Volumes (PV) and Persistent Volume Claims (PVC), and installs both the NVIDIA GPU Operator and KubeRay Operator
 
 ```bash
 kind-gpu-cluster/kind/create-cluster.sh
@@ -51,19 +117,11 @@ kind-gpu-cluster/kind/create-cluster.sh
 Check NVIDIA GPUs availability in your KIND cluster:
 
 ```bash
-kubectl apply -f ../../gpu-test.yaml
-kubectl get pods
+kubectl apply -f gpu-test.yaml
+
 ```
 
-### 2. Deploy your Ray cluster:
-
-```bash
- ray-cluster/ray-cluster.sh
-```
-
-### 3. Run GPU-Accelerated Ray Jobs
-
-Build the Ray Cluster Docker image (with Qwen2 support):
+### 2. Docker image Build for Ray Cluster
 
 ```bash
 cd ray-cluster
@@ -72,18 +130,24 @@ docker build -t 10.0.0.213:5050/qwen2-serve-ray:1.0.4 .
 docker push 10.0.0.213:5050/qwen2-serve-ray:1.0.4
 ```
 
-### Deploy Ray jobs
+### 2. Deploy your Ray cluster:
 
 ```bash
-# logs will show the Ray cluster's total resource capacity, including GPUs.
-ray job submit --address http://localhost:8265 -- python -c "import pprint; import ray; ray.init(); pprint.pprint(ray.cluster_resources(), sort_dicts=True)"
+ ray-cluster/ray-cluster.sh
 ```
 
 ### Port Forward
 
 Port forward ports 8265 and 8000
 
-### Ray Serve (example Qwen2 inference):
+#### Deploy Ray jobs
+
+```bash
+# logs will show the Ray cluster's total resource capacity, including GPUs.
+ray job submit --address http://localhost:8265 -- python -c "import pprint; import ray; ray.init(); pprint.pprint(ray.cluster_resources(), sort_dicts=True)"
+```
+
+#### Ray Serve (example Qwen2 inference):
 
 ```bash
 
@@ -103,7 +167,7 @@ curl -X POST http://127.0.0.1:9023/
      -d '{"prompt": "Explain the concept of Apache ray", "max_new_tokens": 100}'
 ```
 
-## Repository Map & Important Files Overview
+### Repository Map & Important Files Overview
 
 - `kind-gpu-cluster/`: KIND GPU enabled cluster creation scripts, NVIDIA plugins setup, GPU tests, and other utilities.
 - `ray-cluster/Dockerfile`: Docker image specification to run GPU workloads on a Ray cluster.
