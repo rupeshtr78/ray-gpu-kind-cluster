@@ -1,6 +1,6 @@
 image:
   repository: "10.0.0.213:5050/qwen2-serve-ray"
-  tag: "1.0.1"
+  tag: "1.0.4"
   pullPolicy: IfNotPresent
 
 head:
@@ -8,16 +8,24 @@ head:
     num-gpus: "1"
   resources:
     limits:
-      nvidia.com/gpu: 1
+      cpu: "8"
+      memory: "16G"
+      nvidia.com/gpu: "1"
+    requests:
+      cpu: "8"
+      memory: "16G"
+      nvidia.com/gpu: "1"
   containerEnv:
     - name: HUGGINGFACE_HUB_CACHE
       value: /data/hf-cache/huggingface/hub
     - name: HUGGING_FACE_HUB_TOKEN
-      value: /data/hf-cache/huggingface/token
+      value: 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
     - name: CUDA_HOME
       value: "/usr/local/cuda-12.4"
     - name: PYTHONPATH
       value: "$PYTHONPATH:/home/ray"
+    - name: CUDA_VISIBLE_DEVICES
+      value: "1"
   volumeMounts:
     - name: hf-cache
       mountPath: /data/hf-cache
@@ -31,21 +39,30 @@ head:
     - name: cuda
       hostPath:
         path: /usr/local/cuda-12.4
+
 worker:
   rayStartParams:
     num-gpus: "1"
   resources:
     limits:
-      nvidia.com/gpu: 1
+      cpu: "16"
+      memory: "16G"
+      nvidia.com/gpu: "1"
+    requests:
+      cpu: "16"
+      memory: "16G"
+      nvidia.com/gpu: "1"
   containerEnv:
     - name: HUGGINGFACE_HUB_CACHE
       value: /data/hf-cache/huggingface/hub
     - name: HUGGING_FACE_HUB_TOKEN
-      value: /data/hf-cache/huggingface/token
+      value: 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
     - name: CUDA_HOME
       value: "/usr/local/cuda-12.4"
     - name: PYTHONPATH
       value: "$PYTHONPATH:/home/ray"
+    - name: CUDA_VISIBLE_DEVICES
+      value: "1"
   volumeMounts:
     - name: hf-cache
       mountPath: /data/hf-cache
@@ -59,3 +76,11 @@ worker:
     - name: cuda
       hostPath:
         path: /usr/local/cuda-12.4
+
+# service:
+#   type: NodePort
+#   ports:
+#     - name: serve-http
+#       port: 9023
+#       targetPort: 9023
+#       protocol: TCP

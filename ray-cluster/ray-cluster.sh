@@ -57,28 +57,28 @@ helm upgrade --install "${RELEASE_NAME}" "${HELM_REPO_NAME}/${HELM_CHART}" \
   --timeout 600s
 
 # Wait until all Ray pods are ready
-echo "⏳ Waiting for Ray Cluster pods to become ready (timeout: 300s)..."
-kubectl wait --for=condition=ready pod \
-  -l "ray.io/cluster=${RELEASE_NAME}" \
-  -n "${NAMESPACE}" \
-  --timeout=300s
+# echo "⏳ Waiting for Ray Cluster pods to become ready (timeout: 300s)..."
+# kubectl wait --for=condition=ready pod \
+#   -l "ray.io/cluster=${RELEASE_NAME}" \
+#   -n "${NAMESPACE}" \
+#   --timeout=300s
 
 # Display Ray Cluster pods after readiness
-echo "✅ Ray cluster pods status:"
-kubectl get pods -l "ray.io/cluster=${RELEASE_NAME}" -n "${NAMESPACE}"
+# echo "✅ Ray cluster pods status:"
+# kubectl get pods -l "ray.io/cluster=${RELEASE_NAME}" -n "${NAMESPACE}"
 
-# Extract Ray Head Pod Name
-HEAD_POD=$(kubectl get pods \
-  --selector="ray.io/cluster=${RELEASE_NAME},ray.io/node-type=head" \
-  -n "${NAMESPACE}" \
-  -o jsonpath='{.items[0].metadata.name}')
+# # Extract Ray Head Pod Name
+# HEAD_POD=$(kubectl get pods \
+#   --selector="ray.io/cluster=${RELEASE_NAME},ray.io/node-type=head" \
+#   -n "${NAMESPACE}" \
+#   -o jsonpath='{.items[0].metadata.name}')
 
-if [[ -z "${HEAD_POD}" ]]; then
-  echo "❌ Head pod not found."
-  exit 1
-else
-  echo "🎯 Head Pod of Ray Cluster: ${HEAD_POD}"
-fi
+# if [[ -z "${HEAD_POD}" ]]; then
+#   echo "❌ Head pod not found."
+#   exit 1
+# else
+#   echo "🎯 Head Pod of Ray Cluster: ${HEAD_POD}"
+# fi
 
 # Display Ray Cluster head service
 echo "📡 Ray Cluster Head service details:"

@@ -24,6 +24,7 @@ RUN apt-get update && \
 # Parameter-Efficient Tuning (peft)
 # Reinforcement Learning (ray[rllib] via ray[all], gymnasium)
 # Config Management & Productivity (python-dotenv, rich)
+# @TODO add ray specific ones.
 RUN pip install --upgrade pip && \
     pip install \
     torch \
@@ -48,13 +49,13 @@ RUN pip install --upgrade pip && \
     rich
 
 USER ray
-WORKDIR /home/ray/app
+WORKDIR /home/ray
 
 
 # Copy script
 COPY --chown=ray:users ray-jobs/ /home/ray/app/
 
-# Ray Serve endpoint port
+# Custom Ray Serve endpoint port
 EXPOSE 9023
 
 
