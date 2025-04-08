@@ -1,4 +1,4 @@
-# Ray Cluster GPU Deployment Repository
+# GPU-Accelerated Kubernetes Ray Clusters on Kind
 
 Deploy Ray clusters and GPU-enabled containers on Kubernetes using Kind, NVIDIA GPU support, and the KubeRay operator.
 
