@@ -1,4 +1,4 @@
-# GPU-Accelerated Kubernetes Apache Ray Clusters on Kind
+# GPU-Accelerated Apache Ray Clusters on Kubernetes (Kind) for POC and Testing
 
 Deploy Ray clusters and GPU-enabled containers on Kubernetes using Kind, NVIDIA GPU support, and the KubeRay operator.
 
@@ -120,11 +120,12 @@ curl -X POST http://127.0.0.1:9023/
 
 ---
 
-## Documentation & Resources
+## Documentation & References
 
 - [Ray Documentation](https://docs.ray.io)
 - [KubeRay Operator](https://github.com/ray-project/kuberay)
 - [Kind Kubernetes](https://kind.sigs.k8s.io)
+- [Nvidia Device Plugin](https://github.com/NVIDIA/k8s-device-plugin/tree/main) Kind build scripts refered from here.
 
 ## Contributions and Issues
 
