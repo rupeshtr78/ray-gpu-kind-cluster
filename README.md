@@ -11,7 +11,7 @@ Deploy Ray clusters and GPU-enabled containers on Kubernetes using Kind, NVIDIA 
 - **kind-gpu-cluster/**
 
   - Scripts and YAML manifests to quickly deploy and test GPU-enabled KIND (Kubernetes IN Docker) clusters.
-  - Provides integration scripts to leverage NVIDIA GPUs in local Kubernetes environments.
+  - scripts to leverage NVIDIA GPUs in local Kubernetes environments.
 
 - **ray-cluster/**
 
@@ -40,7 +40,7 @@ Before you start, ensure you have:
 
 ## Quick Start
 
-### 1. Set Up a GPU-Enabled KIND Cluster Deploy Ray Cluster & Operators
+### 1. Set Up a GPU-Enabled KIND Cluster Deploy Nvidia device plugin , gpu operator & Ray Operators
 
 Deploy a local Kubernetes cluster including NVIDIA GPU support:
 
