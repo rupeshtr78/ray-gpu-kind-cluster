@@ -112,7 +112,7 @@ curl -X POST http://127.0.0.1:9023/
 
 ---
 
-## Advanced Development & Customizations
+## Customizations
 
 - Extend the Ray jobs by editing scripts in the `ray-cluster/ray-jobs/` directory.
 - Configure your Ray clusters and deployments through respective Helm chart `values.yaml`.
