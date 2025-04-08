@@ -8,16 +8,16 @@ Deploy Ray clusters and GPU-enabled containers on Kubernetes using Kind, NVIDIA 
 
 ### Main Components:
 
+- **kind-gpu-cluster/**
+
+  - Scripts and YAML manifests to quickly deploy and test GPU-enabled KIND (Kubernetes IN Docker) clusters.
+  - Provides integration scripts to leverage NVIDIA GPUs in local Kubernetes environments.
+
 - **ray-cluster/**
 
   - Dockerfiles and YAML manifests for building and deploying Ray clusters.
   - Scripts to launch and manage Ray clusters and Ray jobs.
   - Ray job scripts (`qwen2_serve.py`, `qwen2_run.py`, etc.) to deploy and test inference workloads using Qwen2 and other LLM models.
-
-- **kind-gpu-cluster/**
-
-  - Scripts and YAML manifests to quickly deploy and test GPU-enabled KIND (Kubernetes IN Docker) clusters.
-  - Provides integration scripts to leverage NVIDIA GPUs in local Kubernetes environments.
 
 - **ray-oss-chart/**
 
@@ -40,15 +40,12 @@ Before you start, ensure you have:
 
 ## Quick Start
 
-### 1. Set Up a GPU-Enabled KIND Cluster
+### 1. Set Up a GPU-Enabled KIND Cluster Deploy Ray Cluster & Operators
 
 Deploy a local Kubernetes cluster including NVIDIA GPU support:
 
 ```bash
-cd kind-gpu-cluster/kind/scripts
-./create-kind-cluster.sh
-./build-plugin-image.sh
-./install-plugin.sh
+kind-gpu-cluster/kind/create-cluster.sh
 ```
 
 Check NVIDIA GPUs availability in your KIND cluster:
@@ -58,19 +55,10 @@ kubectl apply -f ../../gpu-test.yaml
 kubectl get pods
 ```
 
-### 2. Deploy Ray Cluster & Operators
-
-Deploy the KubeRay Operator and APIs using chart templates:
+### 2. Deploy your Ray cluster:
 
 ```bash
-helm install kuberay-operator ./ray-oss-chart/kuberay-operator
-helm install kuberay-apiserver ./ray-oss-chart/kuberay-apiserver
-```
-
-Then deploy your Ray cluster:
-
-```bash
-helm install my-ray-cluster ./ray-oss-chart/ray-cluster -f ray-cluster/ray-cluster-values.yaml
+ ray-cluster/ray-cluster.sh
 ```
 
 ### 3. Run GPU-Accelerated Ray Jobs
@@ -79,30 +67,48 @@ Build the Ray Cluster Docker image (with Qwen2 support):
 
 ```bash
 cd ray-cluster
-docker build -t ray-cluster-gpu -f Dockerfile .
+docker run -d -p 5050:5000 --restart=always --name registry registry:2
+docker build -t 10.0.0.213:5050/qwen2-serve-ray:1.0.4 .
+docker push 10.0.0.213:5050/qwen2-serve-ray:1.0.4
 ```
 
-Deploy Ray jobs (example Qwen2 inference):
+### Deploy Ray jobs
 
 ```bash
-kubectl exec -it <ray-head-pod-name> -- /bin/bash
-python ray-jobs/qwen2_serve.py
+# logs will show the Ray cluster's total resource capacity, including GPUs.
+ray job submit --address http://localhost:8265 -- python -c "import pprint; import ray; ray.init(); pprint.pprint(ray.cluster_resources(), sort_dicts=True)"
 ```
 
-Alternatively, run GPU inference directly:
+### Port Forward
+
+Port forward ports 8265 and 8000
+
+### Ray Serve (example Qwen2 inference):
 
 ```bash
-python ray-jobs/qwen2_run.py
+
+ray job submit \
+    --address http://localhost:8265 \
+    --working-dir ./ray-cluster/ray-jobs \
+    --runtime-env-json='{"pip":["torch", "transformers", "ray[serve]", "starlette"]}' \
+    -- python qwen2_run.py
+
 ```
 
----
+Inference
+
+```
+curl -X POST http://127.0.0.1:9023/
+     -H "Content-Type: application/json" \
+     -d '{"prompt": "Explain the concept of Apache ray", "max_new_tokens": 100}'
+```
 
 ## Repository Map & Important Files Overview
 
-- `ray-cluster/Dockerfile`: Docker image specification to run GPU workloads on a Ray cluster.
-- `ray-cluster/ray-jobs/`: Python scripts including Ray workloads and functionalities (`qwen2_serve.py`, `qwen2_run.py`, `check_resources.py`, etc.).
-- `ray-oss-chart/kuberay-*`: KubeRay operator and API server Helm charts for Ray cluster orchestration.
 - `kind-gpu-cluster/`: KIND GPU enabled cluster creation scripts, NVIDIA plugins setup, GPU tests, and other utilities.
+- `ray-cluster/Dockerfile`: Docker image specification to run GPU workloads on a Ray cluster.
+- `ray-cluster/ray-jobs/`: Sample Python scripts including Ray workloads and functionalities (`qwen2_serve.py`, `qwen2_run.py`, `check_resources.py`, etc.).
+- `ray-oss-chart/kuberay-*`: For reference KubeRay operator and API server Helm charts for Ray cluster orchestration.
 
 ---
 
