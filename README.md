@@ -122,6 +122,8 @@ kubectl apply -f gpu-test.yaml
 
 #### 3. Docker image Build for Ray Cluster
 
+[DockerFile](ray-cluster/Dockerfile)
+
 ```bash
 cd ray-cluster
 docker run -d -p 5050:5000 --restart=always --name registry registry:2
