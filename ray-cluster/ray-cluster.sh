@@ -82,4 +82,4 @@ helm upgrade --install "${RELEASE_NAME}" "${HELM_REPO_NAME}/${HELM_CHART}" \
 
 # Display Ray Cluster head service
 echo "📡 Ray Cluster Head service details:"
-kubectl get service "${RELEASE_NAME}-head-svc" -n "${NAMESPACE}"
+kubectl get service "${RELEASE_NAME}-kuberay-head-svc" -n "${NAMESPACE}"

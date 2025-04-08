@@ -77,8 +77,8 @@ worker:
       hostPath:
         path: /usr/local/cuda-12.4
 
-# service:
-#   type: NodePort
+service:
+  type: NodePort
 #   ports:
 #     - name: serve-http
 #       port: 9023
