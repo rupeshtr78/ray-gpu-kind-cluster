@@ -1,6 +1,6 @@
-# GPU-Accelerated Apache Ray Clusters on Kubernetes (Kind) for POC and Testing
+# GPU-Passthrough Enabled Apache Ray Clusters on Kubernetes (Kind) for POC and Testing
 
-Deploy Ray clusters and GPU-enabled containers on Kubernetes using Kind, NVIDIA GPU support, and the KubeRay operator.
+Deploy Ray clusters and GPU-enabled containers on Kubernetes using Kind, NVIDIA GPU support, and the KubeRay operator. This setup allows GPU passthrough from your host system directly into your Kubernetes (Kind) cluster nodes, enabling GPU Ray workloads and serve deployments.
 
 ---
 

@@ -1,0 +1,33 @@
+[project]
+name = "ray-cluster"
+version = "0.1.0"
+description = "Ray serve GPU inference jobs"
+authors = [{name = "Rupesh", email = "rupeshtr@gmail.com"}]
+requires-python = ">=3.8"
+
+dependencies = [
+    "torch",
+    "transformers",
+    "accelerate",
+    "ray[all]",
+    "starlette",
+    "fastapi",
+    "uvicorn",
+    "vllm",
+    "datasets",
+    "pandas",
+    "numpy",
+    "peft",
+    "deepspeed",
+    "torchmetrics",
+    "mlflow",
+    "tensorboard",
+    "gymnasium",
+    "loguru",
+    "python-dotenv",
+    "rich"
+]
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
