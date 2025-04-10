@@ -1,6 +1,6 @@
 image:
   repository: "10.0.0.213:5050/qwen2-serve-ray"
-  tag: "1.0.4"
+  tag: "1.0.5"
   pullPolicy: IfNotPresent
 
 head:
@@ -9,11 +9,11 @@ head:
   resources:
     limits:
       cpu: "8"
-      memory: "16G"
+      memory: "12G"
       nvidia.com/gpu: "1"
     requests:
       cpu: "8"
-      memory: "16G"
+      memory: "12G"
       nvidia.com/gpu: "1"
   containerEnv:
     - name: HUGGINGFACE_HUB_CACHE
@@ -25,7 +25,7 @@ head:
     - name: PYTHONPATH
       value: "$PYTHONPATH:/home/ray"
     - name: CUDA_VISIBLE_DEVICES
-      value: "1"
+      value: "0,1"
   volumeMounts:
     - name: hf-cache
       mountPath: /data/hf-cache
@@ -62,7 +62,7 @@ worker:
     - name: PYTHONPATH
       value: "$PYTHONPATH:/home/ray"
     - name: CUDA_VISIBLE_DEVICES
-      value: "1"
+      value: "0,1"
   volumeMounts:
     - name: hf-cache
       mountPath: /data/hf-cache

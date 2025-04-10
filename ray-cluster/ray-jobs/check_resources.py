@@ -24,7 +24,7 @@ from vllm import AsyncEngineArgs
 if __name__ == "__main__":
     check_cuda()
     print(ray.get(gpu_test.remote())) 
-    print(AsyncEngineArgs.__dict__)
+    # print(AsyncEngineArgs.__dict__)
     print(ray.cluster_resources())  # Shows available CPUs/GPUs
 
 

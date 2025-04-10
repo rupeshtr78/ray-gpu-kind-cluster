@@ -70,4 +70,4 @@ if __name__ == "__main__":
     retrieved_data = ray.get(retrieved_data_refs)
     print("Stored data inside DataStore:", retrieved_data)
     
-    ray.shutdown()
+    ray.shutdown() # Shutdown Ray to clean up resources and ensure a graceful exit

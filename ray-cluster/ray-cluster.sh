@@ -27,11 +27,10 @@ if ! kubectl get namespace "${NAMESPACE}" >/dev/null 2>&1; then
 fi
 
 # Apply PVC Yif pvc if it doesn't exist
+# Apply PVC if it doesn't exist
 if ! kubectl get pvc "${PVC_NAME}" -n "${NAMESPACE}" >/dev/null 2>&1; then
   echo "📥 Creating PVC ${PVC_NAME} in namespace ${NAMESPACE}..."
   kubectl apply -f - <<EOF
-echo "📥 Applying PVC ${PVC_NAME} in namespace ${NAMESPACE}..."
-kubectl apply -f - <<EOF
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -40,7 +39,7 @@ metadata:
 spec:
   storageClassName: standard
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi

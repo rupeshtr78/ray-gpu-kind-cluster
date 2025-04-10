@@ -6,24 +6,27 @@ import torch
 
 @serve.deployment(
     num_replicas=1,  
-    ray_actor_options={"num_cpus": 12, 
+    ray_actor_options={"num_cpus": 8, 
                        "num_gpus": 1,
                        "memory": 12 * 1024 * 1024 * 1024, 
-                        "runtime_env": {
-                            "env_vars": {
-                                "CUDA_VISIBLE_DEVICES": "1"  # Tesla P40
-                            }
-                    }
+                    #     "runtime_env": {
+                    #         "env_vars": {
+                    #             "CUDA_VISIBLE_DEVICES": "0"  # Tesla P40
+                    #         }
+                    # }
             }
 )
 class Qwen25Server:
     def __init__(self):
         model_name = "Qwen/Qwen2.5-1.5B-Instruct"
 
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        print(f"Using computed device: {self.device}")
+
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name, 
-            device_map="auto",
+            device_map=self.device,
             torch_dtype=torch.bfloat16, 
             trust_remote_code=True
         )
@@ -53,4 +56,4 @@ if __name__ == "__main__":
     serve.start(http_options={"host": "0.0.0.0", "port": 8000})
 
     # Deploy your Ray Serve deployment clearly and correctly:
-    serve.run(Qwen25Server.bind())
+    serve.run(Qwen25Server.bind(), route_prefix="/v1/chat/completions")

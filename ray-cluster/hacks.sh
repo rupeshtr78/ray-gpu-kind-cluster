@@ -38,11 +38,13 @@ ray job submit --address http://localhost:8265 -- python app/check_resources.py 
 # worked
 serve run --address http://localhost:8265 --working-dir /home/ray/app qwen2_serve:qwen_server # this worked 1.0.1
 
-curl -X POST http://127.0.0.1:9023/ \                                                                                             <aws:minio>
+curl -X POST http://127.0.0.1:9023 \
      -H "Content-Type: application/json" \
      -d '{"prompt": "Explain the concept of Apache ray", "max_new_tokens": 100}'
 
-
+curl -X POST http://127.0.0.1:9023/v1/chat/completions \
+     -H "Content-Type: application/json" \
+     -d '{"prompt": "Explain the concept of Apache ray", "max_new_tokens": 1000}'
 
 
 # working
