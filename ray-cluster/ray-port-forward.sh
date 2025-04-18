@@ -40,6 +40,6 @@ kubectl port-forward \
   --namespace "${NAMESPACE}" \
   "${HEAD_POD}" \
   --address "${HOST_IP}" \
-  8000:9023 &
+  9023:8000 &
 
 echo "🚀 Finished Port forwarding to Ray Head Pod..." 
