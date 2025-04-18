@@ -1,6 +1,6 @@
 image:
-  repository: "10.0.0.213:5050/qwen2-serve-ray"
-  tag: "1.0.5"
+  repository: "10.0.0.213:5050/qwen2-serve-ray-2.4.1-py310"
+  tag: "1.0.4"
   pullPolicy: IfNotPresent
 
 head:

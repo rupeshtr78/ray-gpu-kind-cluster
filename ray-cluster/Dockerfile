@@ -1,5 +1,5 @@
-FROM rayproject/ray:2.41.0
-
+# FROM rayproject/ray:2.41.0
+FROM rayproject/ray:2.41.0-py310-cu123
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1

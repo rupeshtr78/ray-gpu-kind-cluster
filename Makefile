@@ -29,9 +29,10 @@ build-image:
 ray-deploy:
 	bash $(RAY_CLUSTER_SCRIPT)
 
-## Port-forward Ray dashboard (8265) and API (8000)
+## Port-forward Ray dashboard (8265) and Client (10001) and Server(8000:9023)
 port-forward:
-	kubectl port-forward svc raycluster-kuberay-head-svc 8265:8265 9023:8000 --address=0.0.0.0 &
+    bash ray-cluster/ray-port-forward.sh
+	
 
 ## Submit a simple job to Ray to test the cluster
 submit-job:
